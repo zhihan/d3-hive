@@ -97,8 +97,12 @@ function link() {
   return link;
 }
 
-
+/**
+  Utility for plotting nodes. The nodes are simply drawn as circles and
+  therefore do not need complicated shape generators.
+ */
 var nodeUtil = {
+  /** Compute the cartesian from polar coordinates. */
   cx: function cx(node, r, a) {
     return  r * (Math.cos(a));
   },

@@ -1,14 +1,14 @@
 // Nothing yet
 var outerRadius = 200;
-var innerRadius = 40;
+var innerRadius = 20;
 
 var svg = d3.select("#chart")
   .append("svg")
-  .attr("width", 960)
-  .attr("height", 720)
+  .attr("width", 440)
+  .attr("height", 440)
   .append("g")
     .attr("transform",
-      "translate(" + outerRadius * 1.0+ "," + outerRadius * 1.0 + ")");
+      "translate(" + (outerRadius-20) + "," + (outerRadius+10) +")");
 
 // Original data is given in the node and link format
 var nodes = [{name: "a"}, {name:"b"}, {name:"c"}, {name:"d"}];
@@ -124,16 +124,18 @@ svg.append("g")
 // Highlight the link and connected nodes on mouseover.
 function linkMouseover(d) {
   svg.selectAll(".link")
-  .classed("active", function(p) { return p === d; });
+    .classed("active", function(p) { return p === d; });
   svg.selectAll(".node")
-  .classed("active", function(p) {
-    return p === d.source || p === d.target;
+    .classed("active", function(p) {
+      return p === d.source || p === d.target;
     });
+  d3.select("#status").text(d.source.name + "->" + d.target.name);
 }
 
 // Clear any highlighted nodes or links.
 function mouseout() {
   svg.selectAll(".active").classed("active", false);
+  d3.select("#status").text("Select an item in the chart to see details.");
 }
 
 function nodeCx(node) {
@@ -155,3 +157,16 @@ svg.append("g")
   .attr("r", 4)
   .attr("cx", nodeCx)
   .attr("cy", nodeCy)
+  .on("mouseover", nodeMouseover)
+  .on("mouseout", mouseout);
+
+function nodeMouseover(d) {
+  svg.selectAll(".node")
+    .classed("active", function(p) {
+      return p === d;
+    });
+  svg.selectAll(".link")
+    .classed("active", function(p) {
+      return (p.source === d) || (p.target === d);
+    });
+}
