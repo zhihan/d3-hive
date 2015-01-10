@@ -1,10 +1,11 @@
-var majorAngle = 2 * Math.PI / 3; // angle between major axis
-var minorAngle = Math.PI / 12;
+var majorAngle = 2.0 * Math.PI / 3; // angle between major axis
+var minorAngle = 1.0 * Math.PI / 12;
 
 var angleScale = d3.scale.ordinal()
   .domain(["source", "source-target", "target-source", "target"])
-  .range([0, majorAngle - minorAngle, majorAngle + minorAngle, 2 * manjorAngle]);
+  .range([0, majorAngle - minorAngle, majorAngle + minorAngle, 2 * majorAngle]);
 
+var color = d3.scale.category10();
 
 /**
    Hive plot for D3js
@@ -104,6 +105,31 @@ function link() {
   };
 
   return link;
+}
+
+function node(){
+  var angle = function(d) { return d.angle; };
+  var radius = function(d) {return d.radius; };
+
+  var node = function(d) {
+    var a = angle(d);
+    var r = radius(d);
+    return "translate( " + r * (Math.sin(a)) + ", " + (-r * Math.cos(a)) + ")";
+  }
+
+  node.angle = function(_) {
+    if (!arguments.length) return angle;
+    angle = _;
+    return node;
+  };
+
+  node.radius = function(_) {
+    if (!arguments.length) return radius;
+    radius = _;
+    return node;
+  };
+
+  return node;
 }
 
 function degrees(radians) {
