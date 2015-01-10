@@ -16,11 +16,11 @@ var color = d3.scale.category10();
 
    link()
 
-   The object has the following fields:
+   The object need to have the following fields:
    .source - The source node of the link
    .target - The target node of the link
-   .radius
-   .angle
+   .radius - A callback function to generate radius value.
+   .angle - A callback function to generate angle value.
 */
 
 // A shape generator for Hive links, based on a source and a target.
@@ -107,6 +107,9 @@ function link() {
   return link;
 }
 
+/**
+
+ */
 function node(){
   var angle = function(d) { return d.angle; };
   var radius = function(d) {return d.radius; };
