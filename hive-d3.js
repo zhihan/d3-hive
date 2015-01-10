@@ -3,7 +3,7 @@ var minorAngle = 1.0 * Math.PI / 12;
 
 var angleScale = d3.scale.ordinal()
   .domain(["source", "source-target", "target-source", "target"])
-  .range([0, majorAngle - minorAngle, majorAngle + minorAngle, 2 * majorAngle]);
+  .range([-majorAngle, -minorAngle, minorAngle,  majorAngle]);
 
 var color = d3.scale.category10();
 
@@ -34,7 +34,7 @@ function link() {
       angle = function(d) { return d.angle; },
       startRadius = function(d) { return d.radius; },
       endRadius = startRadius,
-      arcOffset = -Math.PI / 2;
+      arcOffset = 0;
 
   function link(d, i) {
     var s = node(source, this, d, i),
@@ -44,20 +44,10 @@ function link() {
     if (t.a - s.a > Math.PI) s.a += 2 * Math.PI;
     var a1 = s.a + (t.a - s.a) / 3,
         a2 = t.a - (t.a - s.a) / 3;
-    return s.r0 - s.r1 || t.r0 - t.r1
-        ? "M" + Math.cos(s.a) * s.r0 + "," + Math.sin(s.a) * s.r0
-        + "L" + Math.cos(s.a) * s.r1 + "," + Math.sin(s.a) * s.r1
-        + "C" + Math.cos(a1) * s.r1 + "," + Math.sin(a1) * s.r1
-        + " " + Math.cos(a2) * t.r1 + "," + Math.sin(a2) * t.r1
-        + " " + Math.cos(t.a) * t.r1 + "," + Math.sin(t.a) * t.r1
-        + "L" + Math.cos(t.a) * t.r0 + "," + Math.sin(t.a) * t.r0
-        + "C" + Math.cos(a2) * t.r0 + "," + Math.sin(a2) * t.r0
-        + " " + Math.cos(a1) * s.r0 + "," + Math.sin(a1) * s.r0
-        + " " + Math.cos(s.a) * s.r0 + "," + Math.sin(s.a) * s.r0
-        : "M" + Math.cos(s.a) * s.r0 + "," + Math.sin(s.a) * s.r0
-        + "C" + Math.cos(a1) * s.r1 + "," + Math.sin(a1) * s.r1
-        + " " + Math.cos(a2) * t.r1 + "," + Math.sin(a2) * t.r1
-        + " " + Math.cos(t.a) * t.r1 + "," + Math.sin(t.a) * t.r1;
+    return "M" + Math.cos(s.a) * s.r0 + "," + Math.sin(s.a) * s.r0
+      + "C" + Math.cos(a1) * s.r1 + "," + Math.sin(a1) * s.r1
+      + " " + Math.cos(a2) * t.r1 + "," + Math.sin(a2) * t.r1
+      + " " + Math.cos(t.a) * t.r1 + "," + Math.sin(t.a) * t.r1;
   }
 
   function node(method, thiz, d, i) {
@@ -107,34 +97,17 @@ function link() {
   return link;
 }
 
-/**
 
- */
-function node(){
-  var angle = function(d) { return d.angle; };
-  var radius = function(d) {return d.radius; };
+var nodeUtil = {
+  cx: function cx(node, r, a) {
+    return  r * (Math.cos(a));
+  },
 
-  var node = function(d) {
-    var a = angle(d);
-    var r = radius(d);
-    return "translate( " + r * (Math.sin(a)) + ", " + (-r * Math.cos(a)) + ")";
+  cy: function cy(node, r, a) {
+    return r * Math.sin(a);
   }
-
-  node.angle = function(_) {
-    if (!arguments.length) return angle;
-    angle = _;
-    return node;
-  };
-
-  node.radius = function(_) {
-    if (!arguments.length) return radius;
-    radius = _;
-    return node;
-  };
-
-  return node;
-}
+};
 
 function degrees(radians) {
-  return radians / Math.PI * 180 - 90;
+  return radians / Math.PI * 180;
 }

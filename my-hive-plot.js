@@ -100,6 +100,14 @@ svg.selectAll(".axis")
     .attr("x1", radiusScale(0))
     .attr("x2", function(d) { return radiusScale(15); });
 
+function nodeAngle(node){
+  return angleScale(node.type);
+}
+
+function nodeRadius(node) {
+  return radiusScale(node.index);
+}
+
 // Draw the links
 svg.append("g")
   .attr("class", "links")
@@ -108,10 +116,33 @@ svg.append("g")
     .enter().append("path")
       .attr("class", "link")
       .attr("d", link()
-        .angle(function(node) { return angleScale(node.type); })
-        .radius(function radiusMap(node) {
-          return radiusScale(node.index);
-          }));
+        .angle(nodeAngle)
+        .radius(nodeRadius))
+      .on("mouseover", linkMouseover)
+      .on("mouseout", mouseout);
+
+// Highlight the link and connected nodes on mouseover.
+function linkMouseover(d) {
+  svg.selectAll(".link")
+  .classed("active", function(p) { return p === d; });
+  svg.selectAll(".node")
+  .classed("active", function(p) {
+    return p === d.source || p === d.target;
+    });
+}
+
+// Clear any highlighted nodes or links.
+function mouseout() {
+  svg.selectAll(".active").classed("active", false);
+}
+
+function nodeCx(node) {
+  return nodeUtil.cx(node, nodeRadius(node), nodeAngle(node));
+}
+
+function nodeCy(node) {
+  return nodeUtil.cy(node, nodeRadius(node), nodeAngle(node));
+}
 
 // Draw the nodes
 svg.append("g")
@@ -122,10 +153,5 @@ svg.append("g")
   .attr("class", "node")
   .style("fill", function(d) { return color(d.name); })
   .attr("r", 4)
-  .attr("transform", node()
-    .angle(function(d) {
-      return angleScale(d.type)
-      })
-    .radius(function(d){
-      return radiusScale(d.index)
-      }));
+  .attr("cx", nodeCx)
+  .attr("cy", nodeCy)
