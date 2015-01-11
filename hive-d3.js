@@ -102,11 +102,11 @@ function link() {
   therefore do not need complicated shape generators.
  */
 var nodeUtil = {
-  /** Compute the cartesian from polar coordinates. */
+  /* Compute the cartesian from polar coordinates. */
   cx: function cx(node, r, a) {
     return  r * (Math.cos(a));
   },
-
+  /* Compute the cartesian from polar coordinates. */
   cy: function cy(node, r, a) {
     return r * Math.sin(a);
   }

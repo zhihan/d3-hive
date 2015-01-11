@@ -1,11 +1,11 @@
 // Nothing yet
-var outerRadius = 200;
+var outerRadius = 300;
 var innerRadius = 20;
 
 var svg = d3.select("#chart")
   .append("svg")
-  .attr("width", 440)
-  .attr("height", 440)
+  .attr("width", 640)
+  .attr("height", 640)
   .append("g")
     .attr("transform",
       "translate(" + (outerRadius-20) + "," + (outerRadius+10) +")");
@@ -96,7 +96,9 @@ svg.selectAll(".axis")
   .data(nodesByType)
   .enter().append("line")
     .attr("class", "axis")
-    .attr("transform", function(d) { return "rotate(" + degrees(angleScale(d.key)) + ")"; })
+    .attr("transform", function(d) {
+      return "rotate(" + degrees(angleScale(d.key)) + ")";
+    })
     .attr("x1", radiusScale(0))
     .attr("x2", function(d) { return radiusScale(15); });
 
@@ -129,7 +131,7 @@ function linkMouseover(d) {
     .classed("active", function(p) {
       return p === d.source || p === d.target;
     });
-  d3.select("#status").text(d.source.name + "->" + d.target.name);
+  d3.select("#status").text(d.source.name + " -> " + d.target.name);
 }
 
 // Clear any highlighted nodes or links.
@@ -165,8 +167,33 @@ function nodeMouseover(d) {
     .classed("active", function(p) {
       return p === d;
     });
+
+  var srcs = [];
+  var dsts = [];
   svg.selectAll(".link")
     .classed("active", function(p) {
-      return (p.source === d) || (p.target === d);
+      if (p.source === d) {
+        dsts.push(p.target);
+        return true;
+      } else if (p.target === d) {
+        srcs.push(p.source);
+        return true;
+      } else {
+        return false;
+      }
     });
+
+  var status = d.name;
+  if (srcs.length > 0) {
+    status = status + " <- ";
+    srcs.forEach(function(l){
+      status = status + " " + l.name;
+    });
+  } else if (dsts.length > 0) {
+    status = status + " -> ";
+    dsts.forEach(function(l){
+      status = status + " " + l.name;
+    });
+  }
+  d3.select("#status").text(status);
 }

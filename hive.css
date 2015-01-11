@@ -6,9 +6,9 @@
 
 .link {
   fill: none;
-  stroke: #BBB;
+  stroke: #999;
   stroke-width: 1px;
-  stroke-opacity: .3;
+  stroke-opacity: .5;
 }
 
 .active {
@@ -19,15 +19,20 @@
 
 
 /* Document css */
+h1{
+  text-align:"right";
+}
+
 #header {
   height: 40pt;
-  font-family: "sans-serif";
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
 }
 
 #chart {
   border: 1px solid;
-  width: 440px;
-  height: 440px;
+  width: 640px;
+  height: 640px;
   background-color: #000;
   float: left;
 }
@@ -41,6 +46,8 @@
 #status {
   font-family: "Courier New", Courier, monospace;
   font-size: 14px;
+  margin: 2px;
+  padding: 2px;
 }
 
 #metrics {
