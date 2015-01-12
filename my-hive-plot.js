@@ -9,6 +9,17 @@ var hive = (function() {
   .attr("transform",
   "translate(" + (outerRadius-20) + "," + (outerRadius+10) +")");
 
+  // Total number of links
+  function numLinks(node) {
+    var total = 0;
+    if (node.out) {
+      total = total + node.out.length;
+    }
+    if (node.in) {
+      total = total + node.in.length;
+    }
+    return total;
+  }
 
   /**
   Connect the nodes and links data with each other.
@@ -54,6 +65,9 @@ var hive = (function() {
     return d3.nest()
     .key( function(d) { return d.type; })
     .sortKeys(d3.ascending)
+    .sortValues(function comparator(na, nb) {
+      return d3.ascending(numLinks(na), numLinks(nb));
+    })
     .entries(nodes);
   }
 
@@ -184,8 +198,8 @@ var hive = (function() {
     .attr("transform", function(d) {
       return "rotate(" + degrees(angleScale(d.key)) + ")";
     })
-    .attr("x1", radiusScale(0))
-    .attr("x2", function(d) { return radiusScale(15); });
+    .attr("x1", innerRadius - 5)
+    .attr("x2", outerRadius + 5);
 
     function nodeAngle(node){
       return angleScale(node.type);
