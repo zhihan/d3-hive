@@ -21,6 +21,13 @@
   stroke-opacity: 1.0;
 }
 
+.tooltip {
+  background-color: #FFFFFF;
+  font-size: 12px;
+  min-width: 20px;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+}
 
 /* Document css */
 h1{
@@ -41,9 +48,9 @@ table{
 }
 
 #chart {
-  border: 1px solid;
-  width: 640px;
-  height: 640px;
+  border: none;
+  margin: 0px;
+  padding: 0px;
   background-color: #000;
   float: left;
 }

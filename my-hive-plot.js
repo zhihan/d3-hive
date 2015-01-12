@@ -1,13 +1,30 @@
 var hive = (function() {
-  var outerRadius = 300;
+
+  var outerRadius = computeRadius();
   var innerRadius = 20;
   var svg = d3.select("#chart")
+  .attr("width", "100%")
   .append("svg")
-  .attr("width", 640)
-  .attr("height", 640)
+  .attr("width", 2*outerRadius + 40)
+  .attr("height", 2*outerRadius + 40)
   .append("g")
   .attr("transform",
-  "translate(" + (outerRadius-20) + "," + (outerRadius+10) +")");
+  "translate(" + (outerRadius-innerRadius) + "," +
+      (outerRadius+ innerRadius/2) +")");
+
+  var tooltip = d3.select("body")
+      .append("div")
+      .attr("class","tooltip")
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+      .text("a simple tooltip");
+
+  function computeRadius() {
+    var h = window.innerHeight - 40;
+    var w = window.innerWidth - 288 - 16;
+    return Math.min(h, w)/2 - 20;
+  }
 
   // Total number of links
   function numLinks(node) {
@@ -158,6 +175,8 @@ var hive = (function() {
         status = status + " " + l.id;
       });
     }
+    tooltip.style("visibility", "visible")
+      .text(d.id);
     d3.select("#status").text(status);
   }
 
@@ -165,6 +184,12 @@ var hive = (function() {
   function mouseout() {
     svg.selectAll(".active").classed("active", false);
     d3.select("#status").text("Select an item in the chart to see details.");
+    tooltip.style("visibility", "hidden");
+  }
+
+  function nodeMousemove() {
+    tooltip.style("top", (event.pageY-10)+"px")
+      .style("left",(event.pageX+10)+"px");
   }
 
   function plot(graph) {
@@ -229,6 +254,7 @@ var hive = (function() {
     function nodeCy(node) {
       return nodeUtil.cy(node, nodeRadius(node), nodeAngle(node));
     }
+
     // Draw the nodes
     svg.append("g")
     .attr("class", "nodes")
@@ -241,12 +267,14 @@ var hive = (function() {
     .attr("cx", nodeCx)
     .attr("cy", nodeCy)
     .on("mouseover", nodeMouseover)
-    .on("mouseout", mouseout);
+    .on("mouseout", mouseout)
+    .on("mousemove", nodeMousemove);
 
   }
 
+
   return {
-    plot: plot
+    plot: plot,
   }
 
 })();
