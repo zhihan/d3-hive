@@ -64,7 +64,7 @@ var hive = (function() {
     nodesByType.forEach(function(nodes){
       var i;
       for (i=0; i< nodes.values.length; i+=1) {
-        nodes.values[i].index = 10 + i;
+        nodes.values[i].index = i;
       }
     });
   }
@@ -168,7 +168,7 @@ var hive = (function() {
     assignIndex(nodesByType);
 
     var radiusScale = d3.scale.linear()
-    .domain([0, 13])
+    .domain(d3.extent(nodes, function(node) { return node.index; }))
     .range([innerRadius, outerRadius]);
 
     // Duplicate the target-source axis as source-target.
