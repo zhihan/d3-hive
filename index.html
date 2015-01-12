@@ -18,5 +18,11 @@
 <script type="application/javascript" src="hive-d3.js"></script>
 <script type="application/javascript" src="my-hive-plot.js"></script>
 
+<script type="application/javascript">
+d3.json("graph.json",function(error, json) {
+  hive.plot(json);
+});
+</script>
+
 </body>
 </html>
